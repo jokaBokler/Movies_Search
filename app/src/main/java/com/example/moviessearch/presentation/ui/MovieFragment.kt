@@ -4,7 +4,9 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -16,6 +18,7 @@ import com.example.moviessearch.R
 import com.example.moviessearch.databinding.FragmentMovieBinding
 import com.example.moviessearch.domain.entity.Country
 import com.example.moviessearch.domain.entity.Genre
+import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -40,9 +43,6 @@ class MovieFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        val supportActionBar = (activity as AppCompatActivity?)!!.supportActionBar!!
-        supportActionBar.title = ""
-        supportActionBar.setHomeAsUpIndicator(R.drawable.back_arrow)
         binding = FragmentMovieBinding.inflate(layoutInflater)
         viewModel.getMovieInfo(args.filmId)
         return binding.root
@@ -50,8 +50,10 @@ class MovieFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         with(binding) {
+            arrowBack.setOnClickListener{
+                findNavController().navigateUp()
+            }
             layoutErrorMovie.refresh.setOnClickListener {
                 viewModel.getMovieInfo(args.filmId)
                 showMainContent()
@@ -71,7 +73,7 @@ class MovieFragment : Fragment() {
                 binding.noMovieConnectivity.visibility = View.GONE
                 with(binding) {
                     Glide.with(root)
-                        .load(it?.posterUrl)
+                        .load(it.posterUrl)
                         .into(poster)
                     title.text = it?.nameRu
                     description.text = it?.description
@@ -122,9 +124,5 @@ class MovieFragment : Fragment() {
         return capabilities != null &&
                 (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
                         capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI))
-    }
-
-    companion object {
-        fun newInstance() = MovieFragment()
     }
 }

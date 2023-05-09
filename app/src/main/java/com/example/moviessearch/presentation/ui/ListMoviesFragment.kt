@@ -42,12 +42,6 @@ class ListMoviesFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        var supportActionBar = (activity as AppCompatActivity).supportActionBar!!
-        supportActionBar.title = getString(R.string.popular)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
@@ -56,9 +50,6 @@ class ListMoviesFragment : Fragment() {
             layoutError.refresh.setOnClickListener {
                 viewModel.getPopularMovies()
                 showMainContent()
-            }
-            favoriteBtn.setOnClickListener {
-                Toast.makeText(activity,"Избранное в разработке", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -96,14 +87,6 @@ class ListMoviesFragment : Fragment() {
         }
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        val item: MenuItem = menu.findItem(R.id.search_bar)
-        (activity as AppCompatActivity).supportActionBar!!.setTitleColor(Color.BLACK)
-        item.setIcon(R.drawable.search2)
-        item.isVisible = true
-    }
-
     private fun checkInternetConnectivity(): Boolean {
         val connectivityManager =
             context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -113,11 +96,4 @@ class ListMoviesFragment : Fragment() {
                 (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
                         capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI))
     }
-
-    private fun ActionBar.setTitleColor(color: Int) {
-        val text = SpannableString(title ?: "")
-        text.setSpan(ForegroundColorSpan(color), 0, text.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        title = text
-    }
-
 }
